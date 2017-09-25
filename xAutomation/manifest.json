@@ -1,0 +1,58 @@
+{
+	"manifest_version":2,
+	"name": "xAutomation Labs Chrome Extension.",
+	"description" : "This extension lets developers record the user interactions as automation test cases and generates compatible xml file which framework can interpret and execute locally or over BrowserStack",
+	"version": "1.0",
+	
+	"browser_action" : {
+		"default_icon": "icon.png"
+	},
+	
+    "background": {
+        "scripts": [ "js/background.js" ]
+    },
+	
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [ "js/modules/front.js" ],
+            "all_frames": true,
+            "run_at": "document_end"
+        }
+    ],	
+	
+    "commands": {
+        "screenshot": {
+            "suggested_key": {
+                "default": "Alt+Shift+C"
+            },
+            "description": "Capture screenshot"
+        },
+        "cursor": {
+            "suggested_key": {
+                "default": "Alt+Shift+V"
+            },
+            "description": "View/hide cursor position"
+        },
+        "wait": {
+            "suggested_key": {
+                "default": "Alt+Shift+W"
+            },
+            "description": "Get wait for element"
+        }
+    },
+
+    "permissions": [
+        "tabs",
+		"storage",
+        "webRequest",
+        "webRequestBlocking",
+        "<all_urls>"
+    ],
+
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+
+}

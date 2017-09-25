@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>XAutomationLabs Test Case Recorder by Sandeep Bassi...</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../css/dropdowns-enhancement.min.css" rel="stylesheet" />
+</head>
+<body ng-app="AutomationModule">
+	<div ng-controller="RecordController">
+		<table>
+			<tr>
+				<td align="left" width="35%" colspan="2">
+					<div>
+						<button class="btn btn-primary" ng-click="createTestCase()">
+							<i class="glyphicon glyphicon-play"></i>
+							Create new test case
+						</button>
+					</div>				
+				</td>
+			</tr>
+			<tr>
+				<td align="left" valign="top" width="35%">
+					<ul class="list-group" ui-sortable ng-model="collection.testCases">
+						<li class="list-group-item clearfix"  ng-repeat="testCase in collection.testCases track by $index">
+							<span class="label label-primary" ng-if="testCase.testCaseName">{{ testCase.testCaseName }}</span>
+							<span class="label label-info">{{ testCase.metadataCategory }}</span>
+							<span class="btn-group btn-group-sm pull-right">
+								<button ng-if="isTestRunning()" class="btn btn-danger" ng-click="stopTest()">
+									<i class="glyphicon glyphicon-remove"></i>
+								</button>
+								<button class="btn btn-primary" ng-click="initTestWorkbench()" title="Initialize Test Workbench">
+									<i class="glyphicon glyphicon-flash"></i>
+								</button>
+								<button class="btn btn-success" ng-click="showActionJson($index)" title="Edit Json">
+									<i class="glyphicon glyphicon-circle-arrow-down"></i>
+								</button>								
+								<button class="btn btn-warning" ng-click="downloadJson()">
+									<i class="glyphicon glyphicon-save"></i>
+								</button>
+							</span>
+						</li>
+					</ul>
+				</td>
+				<td width="65%">
+					<div  class="container">
+						<div ng-if="isReady" role="tabpanel">
+							<!-- Nav tabs -->
+							<ul class="nav nav-tabs" role="tablist">
+								<li role="presentation" class="active">
+									<a href="#user-interactions" aria-controls="home" role="tab" data-toggle="tab">
+										<i class="glyphicon glyphicon-flash"></i>
+										Record User interactions
+									</a>
+								</li>
+								<li role="presentation">
+									<a href="#run-test-cases" aria-controls="profile" role="tab" data-toggle="tab">
+										<i class="glyphicon glyphicon-expand"></i>
+										Run Test Case
+									</a>
+								</li>
+								<li role="presentation">
+									<a href="#debug-test-cases" aria-controls="profile" role="tab" data-toggle="tab">
+										<i class="glyphicon glyphicon-random"></i>
+										Debug Test Case
+									</a>
+								</li>
+
+							</ul>
+							<div class="tab-content">
+								<div role="tabpanel" class="tab-pane active" id="user-interactions">
+									<ng-include src="'../views/ui-tab.html'"></ng-include>
+								</div>
+								<div role="tabpanel" class="tab-pane" id="har-entries">
+									<ng-include src="'../views/server-tab.html'"></ng-include>
+								</div>
+							</div>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+    <script src="../Scripts/download.js"></script>
+    <script src="../Scripts/lodash.min.js"></script>
+    <script src="../scripts/jquery-2.1.3.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/bootstrap.min.js"></script>
+    <script src="../Scripts/dropdowns-enhancement.js"></script>
+    <script src="../Scripts/angular.min.js"></script>
+    <script src="../Scripts/sortable.js"></script>
+    <script src="../Scripts/resemble.js"></script>
+    <script src="app.js"></script>
+	<script src="../Scripts/angular-chrome-storage.js"></script>
+	<script src="../js/modules/UiRecorder.js"></script>
+    <script src="../Scripts/request-helper.js"></script>
+	<script src="../js/modules/RecordController.js"></Script>
+</body>
+</html>

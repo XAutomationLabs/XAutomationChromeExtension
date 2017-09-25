@@ -1,0 +1,68 @@
+﻿<div class="modal fade" id="events-collection" tabindex="-1" role="dialog" aria-labelledby="json" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Define Test case</h4>
+            </div>
+			<div ng-if="errorMessage" class="alert alert-danger fade in alert-dismissable">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Error!</strong> {{errorMessage}}
+			</div>
+            <div class="modal-body">
+				<div class="panel panel-primary">
+					<div class="panel-heading">New Test Case</div>
+					<div class="panel-body">	
+						<div class="form-horizontal">
+							<div class="form-group">
+								<label for="test-case-name" class="col-sm-3 control-label">Test Case Name</label>
+								<div class="col-sm-8">
+									<div class="input-group">
+										<input id="test-case-name" type="text" class="form-control" placeholder="Test Case Name" aria-label="delay" ng-model="current.collection.testCaseName">
+									</div>
+								</div>
+							</div>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Metadata Information...</div>
+								<div class="panel-body">
+									<div class="form-group">
+										<label for="name" class="col-sm-2 control-label">Name</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" placeholder="Name" id="name" ng-model="current.collection.metadata.name">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="description" class="col-sm-2 control-label">Description</label>
+										<div  class="col-sm-10">
+											<div class="input-group">
+												<textarea id="description" style="width: 400px;" aria-label="description" placeholder="Description" class="form-control" ng-model="current.collection.metadata.description"></textarea>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="author" class="col-sm-2 control-label">Author</label>
+										<div class="col-sm-10">
+											<div class="input-group">
+												<input id="author" type="text" class="form-control" placeholder="Author" aria-label="author" ng-model="current.collection.metadata.author">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="category" class="col-sm-2 control-label">Category</label>
+										<div class="col-sm-10">
+											<input id="category" type="text" class="form-control" placeholder="Category" ng-model="current.collection.metadata.category">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>						
+					</div>
+				</div>
+			</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-if="!testCreation.test-case-name.$error.minlength || !testCreation.test-case-name.$error.maxlength" ng-click="saveCollectionJson()">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
