@@ -1,5 +1,5 @@
 
-angular.module('AutomationModule', ['chromeStorage']).controller('RecordController', ['$scope', '$http', function ($scope, $http) {
+angular.module('AutomationModule', ['chromeStorage']).controller('RecordController', ['$scope', '$http', 'chromeStorage', function ($scope, $http, chromeStorage) {
 
 //	Setting up the scope variable and define all the model values inside $Scope object
     var record = null;
@@ -8,12 +8,16 @@ angular.module('AutomationModule', ['chromeStorage']).controller('RecordControll
 	var background = null;
 	var editingActionIndex = null;
 
+	$scope.storageApi = chromeStorage;
+	
     window.onbeforeunload = function () {
         if (background) {
             background.popup = null;
         }
     };
 
+	$scope.editingCollectionIndex = null;
+	
     $scope.editingAction = {
         json: null
     };
@@ -33,6 +37,7 @@ angular.module('AutomationModule', ['chromeStorage']).controller('RecordControll
     $scope.showResponseError = true;
 	$scope.collectionSelected = false;
 	$scope.errorMessage;
+	$scope.collection = null;
 	
 	function resetUiRecorderStatus() {
 		$scope.isTabReady = false;
@@ -44,6 +49,10 @@ angular.module('AutomationModule', ['chromeStorage']).controller('RecordControll
 	
 	function downloadJson(filename, text) {
 		download(new Blob([text]), filename, "text/plain");
+	}
+	
+	function downloadXml(filename, text) {
+		download(new Blob([text]), filename, "text/xml");
 	}
 	
 	$scope.roundTimeDiff = function(timeDiff) {
@@ -65,8 +74,25 @@ angular.module('AutomationModule', ['chromeStorage']).controller('RecordControll
 			case 'wait':
 				return 'glyphicon-time';
 			default:
+				var data = 'actionType = ' + action.actionType + ' action tag = ' + action.action.tagName + ' data == ' + action.action.value;
+				//alert(data);
+				
+				if(action.action.tagName === 'INPUT' && action.action.type === 'click' && action.action.value == undefined) {
+					return 'glyphicon-hand-up';
+				}
+				
+				if(action.action.tagName === 'INPUT' && action.action.value) {
+					return 'glyphicon-font';
+				}
+				
 				return 'glyphicon-flash';
 		}
+	};
+	
+	$scope.downloadXml = function(index) {
+		var xml = generateXml(index);
+		
+		downloadXml('testcase.xml', xml);
 	};
 	
 	$scope.downloadJson = function() {
@@ -144,8 +170,9 @@ angular.module('AutomationModule', ['chromeStorage']).controller('RecordControll
 		record.removeAction(index);
 	};
 	
-	$scope.initTestWorkbench = function() {
+	$scope.initTestWorkbench = function(index) {
 		$scope.collectionSelected = true;
+		$scope.editingCollectionIndex = index;
 	};
 	
 	$scope.isCollectionReady = function() {
@@ -173,6 +200,20 @@ angular.module('AutomationModule', ['chromeStorage']).controller('RecordControll
 		}
 	};
 	
+	$scope.showTestCaseXml = function(index) {
+		var generator = new Generator.Xml($scope.collection.getCollection(index));
+		
+		//$scope.editingCollection.json = angular.toJson($scope.collection.getCollection(index));
+		$scope.editingCollection.json = generator.getXml();
+		$('#events-collection-xml').modal();
+	};
+	
+	function generateXml(index) {
+		var generator = new Generator.Xml($scope.collection.getCollection(index));
+		
+		return generator.getXml();
+	}
+	
 	$scope.showActionJson = function(index) {
 		editingActionIndex = index;
 		
@@ -191,18 +232,20 @@ angular.module('AutomationModule', ['chromeStorage']).controller('RecordControll
 		var index;
 		var searchValue = $scope.current.collection.testCaseName;
 		
-		_.each($scope.collection.testCases, function(data, idx) { 
-			if (_.isEqual(data.testCaseName, searchValue)) {
-				index = idx;
-				return;
-			}
-		});
+		if($scope.collection) {
+			_.each($scope.collection.testCases, function(data, idx) { 
+				if (_.isEqual(data.testCaseName, searchValue)) {
+					index = idx;
+					return;
+				}
+			});			
+		}
 		
 		if(index >= 0) {
 			$scope.errorMessage = "Test case '" + $scope.current.collection.testCaseName + "' already existing, you cannot create a duplicate test case";
 		} else {
-			collection.pushCollection($scope.current.collection);
-			
+			$scope.collection.pushCollection($scope.current.collection);
+			record.clearTestResults();//.actions = null;
 			$('#events-collection').modal('hide');			
 		}
 	};
@@ -298,6 +341,9 @@ angular.module('AutomationModule', ['chromeStorage']).controller('RecordControll
                 record.pushAction(message.msg);
                 $scope.$apply(function () {
                     $scope.record = record;
+					$scope.collection.testCases[$scope.editingCollectionIndex].record = record;
+					
+					chromeStorage.set("xAutomationLabs", $scope.collection);
                 });
                 break;
             
@@ -344,6 +390,9 @@ angular.module('AutomationModule', ['chromeStorage']).controller('RecordControll
 		
 		$scope.collection = collection;
 		
+		record.given.innerWidth = 1000;
+		record.given.innerHeight = 1000;
+				
         chrome.tabs.sendMessage(tab.id, { type: 'front-size' }, function (response) {
             chrome.windows.get(tab.windowId, function (window) {
                 $scope.$apply(function () {
@@ -360,5 +409,18 @@ angular.module('AutomationModule', ['chromeStorage']).controller('RecordControll
                 });
             });
         });
-    });
+		
+ 		$scope.storageApi.get("xAutomationLabs").then(function(keyValue) {
+			if(keyValue) {
+				var localCollection = new AutomationRecorder.Collection(keyValue.testCases);
+				//$scope.collection.restoreState(keyValue);
+				$scope.collection = localCollection;
+				//$scope.collection = keyValue;
+				
+				if($scope.collection.testCases.length > 0) {
+					$scope.record = $scope.collection.testCases[0].record;
+				}
+			}
+		});		
+	});
 }]);

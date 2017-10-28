@@ -76,6 +76,38 @@
                             <input id="frameIndex" type="text" class="form-control" ng-model="current.action.action.frameIndex">
                         </div>
                     </div>
+                    <div class="form-group" ng-if="current.action.actionType !== 'screenshot'">
+                        <label for="idSelector" class="col-sm-2 control-label">Id Selector</label>
+                        <div class="col-sm-10">
+                            <input id="idSelector" type="text" class="form-control" ng-model="current.action.action.idSelector">
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="current.action.actionType !== 'screenshot'">
+                        <label for="nameSelector" class="col-sm-2 control-label">Name Selector</label>
+                        <div class="col-sm-10">
+                            <input id="nameSelector" type="text" class="form-control" ng-model="current.action.action.nameSelector">
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-if="current.action.actionType !== 'screenshot'">
+                        <label for="xpathSelector" class="col-sm-2 control-label">XPath Selector</label>
+                        <div class="col-sm-10">
+                            <input id="xpathSelector" type="text" class="form-control" ng-model="current.action.action.xpathSelector">
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="current.action.actionType !== 'screenshot'">
+                        <label for="cssSelector" class="col-sm-2 control-label">Css Selector</label>
+                        <div class="col-sm-10">
+                            <input id="cssSelector" type="text" class="form-control" ng-model="current.action.action.cssSelector">
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="current.action.actionType !== 'screenshot'">
+                        <label for="generatedXml" class="col-sm-2 control-label">Generated Xml</label>
+                        <div class="col-sm-10">
+                            <input id="generatedXml" type="text" class="form-control" ng-model="current.action.action.generatedXml">
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="modal-footer">

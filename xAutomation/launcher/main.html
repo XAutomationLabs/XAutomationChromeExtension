@@ -28,13 +28,13 @@
 								<button ng-if="isTestRunning()" class="btn btn-danger" ng-click="stopTest()">
 									<i class="glyphicon glyphicon-remove"></i>
 								</button>
-								<button class="btn btn-primary" ng-click="initTestWorkbench()" title="Initialize Test Workbench">
+								<button class="btn btn-primary" ng-click="initTestWorkbench($index)" title="Initialize Test Workbench">
 									<i class="glyphicon glyphicon-flash"></i>
 								</button>
-								<button class="btn btn-success" ng-click="showActionJson($index)" title="Edit Json">
+								<button class="btn btn-success" ng-click="showTestCaseXml($index)" title="Show Xml">
 									<i class="glyphicon glyphicon-circle-arrow-down"></i>
 								</button>								
-								<button class="btn btn-warning" ng-click="downloadJson()">
+								<button class="btn btn-warning" ng-click="downloadXml($index)">
 									<i class="glyphicon glyphicon-save"></i>
 								</button>
 							</span>
@@ -90,9 +90,11 @@
     <script src="../Scripts/sortable.js"></script>
     <script src="../Scripts/resemble.js"></script>
     <script src="app.js"></script>
-	<script src="../Scripts/angular-chrome-storage.js"></script>
+	
 	<script src="../js/modules/UiRecorder.js"></script>
+	<script src="../js/modules/Generator.js"></script>
     <script src="../Scripts/request-helper.js"></script>
 	<script src="../js/modules/RecordController.js"></Script>
+	<script src="../Scripts/angular-chrome-storage.js"></script>
 </body>
 </html>

@@ -19,12 +19,13 @@
     </button>
 </div>
 <div class="clearfix"></div>
+<div style="width: 400px height: 600px;  overflow: auto">
 <ul class="list-group" ui-sortable ng-model="record.actions">
     <li class="list-group-item clearfix" ng-repeat="action in record.actions track by $index">
         <span class="label label-primary" ng-if="action.delay > 0">+{{ roundTimeDiff(action.delay) }}s</span>
         <span class="label label-default" ng-class="{'label-success': action.testResult.isDone }" style="margin-right: 4px;">
             <i class="glyphicon" ng-class="getMemoIcon(action)"></i>
-            {{ action.memo }} {{action.action.type}}
+            {{ action.memo }} {{action.action.type}} => {{action.action.friendlyElementName}}
         </span>
         <span class="label label-danger" ng-if="action.actionType === 'wait' && action.testResult.isTimeout">timeout</span>
         <span class="label label-info" ng-if="action.wait > 0">+{{ roundTimeDiff(action.wait) }}s</span>
@@ -65,3 +66,4 @@
         </span>
     </li>
 </ul>
+</div>

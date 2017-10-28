@@ -54,6 +54,10 @@ var AutomationRecorder;
 			return this.testCaseName.length > 0;
 		};
 		
+		CollectionHistory.prototype.attachRecord = function(record) {
+			this.record = record;
+		};
+		
 		return CollectionHistory;
 	})();
 	
@@ -167,9 +171,24 @@ var AutomationRecorder;
 	AutomationRecorder.ActionHistory = ActionHistory;
 	
 	var Collection = (function() {
-		function Collection() {
+		function Collection(testCases) {
 			this.testCases = [];
+			
+			if(testCases) {
+				this.restoreState(testCases);
+			}
 		}
+		
+		Collection.prototype.restoreState = function(testCases, pointer) {
+			for(var i = 0; i < testCases.length; i++){
+				var historyObject = testCases[i];
+				var localHistory = new AutomationRecorder.CollectionHistory(historyObject.collection);
+				
+				localHistory.attachRecord(this.restoreRecord(historyObject.record));
+				this.testCases.push(localHistory);
+			}
+			//this.pushCollection(collection.Collection);
+		};
 		
 		Collection.prototype.pushCollection = function(collection) {
 			this.testCases.push(new CollectionHistory(collection));
@@ -179,6 +198,22 @@ var AutomationRecorder;
 			this.testCases[index] = collection;
 		};
 		
+		Collection.prototype.getCollection = function(index) {
+			if(this.testCases) {
+				if(this.testCases.length < index) return null;
+				
+				return this.testCases[index].getJson();
+			}
+			
+			return null;
+		}
+		
+		Collection.prototype.restoreRecord = function(record) {
+			var localRecord = new AutomationRecorder.Record();
+		
+			return localRecord.restoreState(record);
+		};
+
 		return Collection;
 	})();
 	
@@ -190,11 +225,34 @@ var AutomationRecorder;
 	//framework or with automation framework.
 	var Record = (function(){
 		function Record() {
+			this.extendCtor();
+		}
+		
+		Record.prototype.extendCtor = function() {
 			this.status = AutomationRecorder.RecordStatus.NEW;
 			this.actions = [];
 			this.testRunningStatus = AutomationRecorder.TestRunningStatus.READY;
-			this.given = new Given();
-		}
+			this.given = new Given();			
+		};
+		
+		Record.prototype.restoreState = function(record) {
+			this.extendCtor();
+			
+			for(var i = 0; i < record.actions.length; i++) {
+				var localHistory = new AutomationRecorder.ActionHistory(record.actions[i].delay, record.actions[i].memo, 
+								record.actions[i], record.actions[i].data);
+				
+				this.restoreGivenState(record.given);
+				this.actions.push(localHistory);
+			}
+		};
+		
+		Record.prototype.restoreGivenState = function(given) {
+			this.given.url = given.url;
+			this.given.windowType = window.type;
+			this.given.innerWidth = given.innerWidth;
+			this.given.innerHeight = given.innerHeight;
+		};
 		
 		//Initialize the test case execution by sending message to chrome window to init
 		//that is being handled by front.js content script.

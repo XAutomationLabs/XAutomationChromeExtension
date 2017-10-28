@@ -76,7 +76,22 @@
                             <input id="frameIndex" type="text" class="form-control" ng-model="current.action.action.frameIndex">
                         </div>
                     </div>
-                </div>
+					xpath selector
+                    <div class="form-group" ng-if="current.action.actionType !== 'screenshot'">
+                        <label for="xpathSelector" class="col-sm-2 control-label">XPath Selector</label>
+                        <div class="col-sm-10">
+                            <input id="xpathSelector" type="text" class="form-control" ng-model="current.action.action.xpathSelector">
+                        </div>
+                    </div>
+					css selector
+                    <div class="form-group" ng-if="current.action.actionType !== 'screenshot'">
+                        <label for="cssSelector" class="col-sm-2 control-label">Css Selector</label>
+                        <div class="col-sm-10">
+                            <input id="cssSelector" type="text" class="form-control" ng-model="current.action.action.cssSelector">
+                        </div>
+                    </div>
+
+				</div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
